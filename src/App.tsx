@@ -4,6 +4,8 @@ import { ContentTypeSelector } from './components/ContentTypeSelector';
 import { ContentSummary } from './components/ContentSummary';
 import { QrPreview, type QrPreviewHandle } from './components/QrPreview';
 import { DownloadButtons } from './components/DownloadButtons';
+import { DesignOptions } from './components/DesignOptions';
+import { DesignWarnings } from './components/DesignWarnings';
 import { UrlForm } from './components/forms/UrlForm';
 import { TextForm } from './components/forms/TextForm';
 import { PhoneForm } from './components/forms/PhoneForm';
@@ -12,6 +14,7 @@ import { WifiForm } from './components/forms/WifiForm';
 import { WhatsappForm } from './components/forms/WhatsappForm';
 import { encodeContent, type ContentType } from './content/types';
 import { buildQrFileName } from './content/fileName';
+import type { ErrorCorrectionLevel } from './content/legibility';
 import type { UrlInput } from './content/encoders/url';
 import type { TextInput } from './content/encoders/text';
 import type { PhoneInput } from './content/encoders/phone';
@@ -41,6 +44,9 @@ function App() {
   const [contentType, setContentType] = useState<ContentType>('url');
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
   const qrPreviewRef = useRef<QrPreviewHandle>(null);
+  const [dotColor, setDotColor] = useState('#111111');
+  const [backgroundColor, setBackgroundColor] = useState('#ffffff');
+  const [errorCorrectionLevel, setErrorCorrectionLevel] = useState<ErrorCorrectionLevel>('M');
 
   const encodeResult = useMemo(() => {
     switch (contentType) {
@@ -103,12 +109,33 @@ function App() {
         </section>
 
         <section className="app-preview">
-          <QrPreview ref={qrPreviewRef} data={encodeResult.ok ? encodeResult.value : null} />
+          <QrPreview
+            ref={qrPreviewRef}
+            data={encodeResult.ok ? encodeResult.value : null}
+            color={dotColor}
+            backgroundColor={backgroundColor}
+            errorCorrectionLevel={errorCorrectionLevel}
+          />
           {encodeResult.ok ? (
             <DownloadButtons disabled={!encodeResult.ok} onDownload={handleDownload} />
           ) : (
             <p className="app-preview-hint">Completa el formulario para generar el QR.</p>
           )}
+          {encodeResult.ok && (
+            <DesignWarnings
+              encodedValue={encodeResult.value}
+              dotColor={dotColor}
+              backgroundColor={backgroundColor}
+            />
+          )}
+          <DesignOptions
+            dotColor={dotColor}
+            backgroundColor={backgroundColor}
+            errorCorrectionLevel={errorCorrectionLevel}
+            onDotColorChange={setDotColor}
+            onBackgroundColorChange={setBackgroundColor}
+            onErrorCorrectionLevelChange={setErrorCorrectionLevel}
+          />
         </section>
       </main>
     </div>
