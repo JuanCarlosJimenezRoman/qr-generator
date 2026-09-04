@@ -1,0 +1,34 @@
+import type { EncodeResult } from './result';
+import { encodeUrl, type UrlInput } from './encoders/url';
+import { encodeText, type TextInput } from './encoders/text';
+import { encodePhone, type PhoneInput } from './encoders/phone';
+import { encodeEmail, type EmailInput } from './encoders/email';
+import { encodeWifi, type WifiInput } from './encoders/wifi';
+import { encodeWhatsapp, type WhatsappInput } from './encoders/whatsapp';
+
+export type ContentType = 'url' | 'text' | 'phone' | 'email' | 'wifi' | 'whatsapp';
+
+export type ContentInput =
+  | { type: 'url'; data: UrlInput }
+  | { type: 'text'; data: TextInput }
+  | { type: 'phone'; data: PhoneInput }
+  | { type: 'email'; data: EmailInput }
+  | { type: 'wifi'; data: WifiInput }
+  | { type: 'whatsapp'; data: WhatsappInput };
+
+export function encodeContent(input: ContentInput): EncodeResult {
+  switch (input.type) {
+    case 'url':
+      return encodeUrl(input.data);
+    case 'text':
+      return encodeText(input.data);
+    case 'phone':
+      return encodePhone(input.data);
+    case 'email':
+      return encodeEmail(input.data);
+    case 'wifi':
+      return encodeWifi(input.data);
+    case 'whatsapp':
+      return encodeWhatsapp(input.data);
+  }
+}
