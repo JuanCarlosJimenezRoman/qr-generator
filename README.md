@@ -59,7 +59,6 @@ Un generador de códigos QR **100% en el navegador**. Nada de lo que capturas (e
 
 ![Vista previa del generador](./docs/screenshot.png)
 
-> 📸 *Puedes agregar una captura de pantalla o un GIF corto aquí para mostrar el producto en acción.*
 
 ---
 
