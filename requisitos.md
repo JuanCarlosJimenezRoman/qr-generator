@@ -112,3 +112,15 @@ La primera entrega debe permitir crear un QR de URL, texto, teléfono, email, Wi
 - La aplicación es usable desde un teléfono sin zoom horizontal y mediante teclado en escritorio.
 - Las advertencias aparecen antes de permitir un diseño con contraste insuficiente, margen eliminado o logo excesivo.
 - La página puede desplegarse como sitio estático sin variables secretas ni backend.
+
+## 9. Estado del MVP
+
+El flujo principal (crear, personalizar, exportar, desplegar) está completo y cumple los criterios de 8.4. Se implementaron además las funciones diferidas del paso 8.3.7: logo/imagen central, exportación a PDF, tipo de contenido vCard, y plantillas de estilo (colores/degradados y formas de punto inspirados en apps conocidas, sin usar sus logos oficiales por el tema de marca registrada).
+
+Quedan pendientes, a propósito, algunas piezas del alcance original de la sección 3 — se dejan documentadas aquí para retomarlas si en algún momento hacen falta, en vez de perderlas de vista:
+
+- **Deep links dedicados por red social** (3.1): hoy solo WhatsApp arma su enlace especial (`wa.me`); Instagram, TikTok, X, Facebook, LinkedIn y YouTube se generan como URL genérica. Faltaría un tipo de contenido "Red social" con selector de plataforma + usuario que arme el enlace correcto de cada una.
+- **SMS** (3.1): no implementado como tipo de contenido aparte (sí existe WhatsApp con mensaje predefinido).
+- **Selector de forma de punto independiente** (3.3): en modo "Personalizado" el QR usa puntos cuadrados fijos; elegir cuadrados/redondeados/puntos libremente (sin pasar por una plantilla) no está disponible todavía.
+- **Marco con texto tipo "Escanéame"** (3.3): no implementado.
+- **PWA / uso offline** (8.3.8): no configurado (manifest, service worker). La app ya no hace peticiones de red después de cargar, pero no es instalable ni cachea explícitamente para offline.
