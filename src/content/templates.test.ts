@@ -26,6 +26,13 @@ describe('resolveQrStyle', () => {
     expect(style.backgroundColor).toBe('#abcdef');
   });
 
+  it('incluye las plantillas de redes sociales junto con las genéricas', () => {
+    const ids = QR_TEMPLATES.map((t) => t.id);
+    expect(ids).toContain('classic');
+    expect(ids).toContain('instagram');
+    expect(ids).toContain('discord');
+  });
+
   it('todas las plantillas predefinidas tienen id único y color de fondo definido', () => {
     const ids = QR_TEMPLATES.map((t) => t.id);
     expect(new Set(ids).size).toBe(ids.length);

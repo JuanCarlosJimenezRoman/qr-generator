@@ -1,4 +1,5 @@
 import type { CornerDotType, CornerSquareType, DotType, Gradient } from 'qr-code-styling';
+import { SOCIAL_TEMPLATES } from './socialTemplates';
 
 // Plantillas de estilo "genéricas": colores y formas inspiradas en el look de
 // apps conocidas, pero SIN usar sus logos ni íconos oficiales (esta es una
@@ -28,7 +29,7 @@ export const CUSTOM_TEMPLATE_ID = 'custom';
 
 const DIAGONAL = Math.PI / 4;
 
-export const QR_TEMPLATES: QrTemplate[] = [
+const GENERIC_TEMPLATES: QrTemplate[] = [
   {
     id: 'classic',
     label: 'Clásico',
@@ -115,6 +116,19 @@ export const QR_TEMPLATES: QrTemplate[] = [
     },
   },
 ];
+
+// Las plantillas de redes sociales viven en su propio archivo
+// (socialTemplates.ts) y se unifican aquí para que TemplateSelector y
+// resolveQrStyle funcionen igual sin importar si la plantilla es genérica
+// o de una red social específica.
+const SOCIAL_QR_TEMPLATES: QrTemplate[] = SOCIAL_TEMPLATES.map((social) => ({
+  id: social.id,
+  label: social.label,
+  description: `Colores de ${social.label} (no afiliado).`,
+  style: social.style,
+}));
+
+export const QR_TEMPLATES: QrTemplate[] = [...GENERIC_TEMPLATES, ...SOCIAL_QR_TEMPLATES];
 
 /**
  * Resuelve el estilo final a partir de un id de plantilla. Si el id es

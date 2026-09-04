@@ -4,9 +4,10 @@ import { countTrackingParams } from '../../content/encoders/trackingParams';
 interface UrlFormProps {
   value: UrlInput;
   onChange: (value: UrlInput) => void;
+  placeholder?: string;
 }
 
-export function UrlForm({ value, onChange }: UrlFormProps) {
+export function UrlForm({ value, onChange, placeholder = 'ejemplo.com o https://ejemplo.com' }: UrlFormProps) {
   const trackingCount = countTrackingParams(value.url);
 
   return (
@@ -15,7 +16,7 @@ export function UrlForm({ value, onChange }: UrlFormProps) {
       <input
         id="url-input"
         type="text"
-        placeholder="ejemplo.com o https://ejemplo.com"
+        placeholder={placeholder}
         value={value.url}
         onChange={(e) => onChange({ ...value, url: e.target.value })}
         autoComplete="off"
