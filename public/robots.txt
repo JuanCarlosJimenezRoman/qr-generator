@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://qr-gratis.vercel.app/sitemap.xml

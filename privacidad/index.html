@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+
+    <title>Privacidad — Generador de QR</title>
+    <meta
+      name="description"
+      content="Qué datos toca esta herramienta: el contenido de tus QR nunca sale de tu navegador. Explicación clara de qué mide Vercel Analytics y por qué lo activamos."
+    />
+    <link rel="canonical" href="https://qr-gratis.vercel.app/privacidad/" />
+    <meta name="robots" content="noindex, follow" />
+
+    <link rel="stylesheet" href="/guias-assets/guides.css" />
+  </head>
+  <body>
+    <header class="guide-header">
+      <div class="guide-header-inner">
+        <a class="guide-brand" href="/">✨ Generador de QR</a>
+        <a class="guide-cta-top" href="/">Ir al generador</a>
+      </div>
+    </header>
+
+    <main class="guide">
+      <h1>Privacidad</h1>
+      <p class="guide-lead">
+        Resumen corto: el contenido de tus códigos QR (enlaces, WiFi, contactos, mensajes) nunca sale de
+        tu navegador. Lo único que se mide es tráfico agregado y anónimo del sitio, con Vercel Analytics.
+      </p>
+
+      <h2>El generador de QR en sí</h2>
+      <p>
+        Esta aplicación es 100% del lado del cliente: no hay backend ni base de datos. Todo lo que
+        escribes en el formulario (una URL, los datos de tu red WiFi, un número de WhatsApp, los campos
+        de una vCard) se procesa con JavaScript directamente en tu navegador para generar el código QR.
+        Nada de eso se envía, ni a nuestros servidores ni a ningún tercero. El código es
+        <a href="https://github.com/JuanCarlosJimenezRoman/qr-generator" target="_blank" rel="noopener">abierto en GitHub</a>
+        si quieres confirmarlo tú mismo.
+      </p>
+
+      <h2>Vercel Analytics</h2>
+      <p>
+        Para entender cuánta gente usa el sitio y desde dónde, usamos
+        <a href="https://vercel.com/docs/analytics" target="_blank" rel="noopener">Vercel Web Analytics</a>.
+        Es un servicio de medición sin cookies: identifica visitas con un hash calculado a partir de la
+        petición, que se descarta a las 24 horas, en vez de guardar un identificador permanente en tu
+        navegador.
+      </p>
+      <div class="guide-callout">
+        <strong>Qué datos recibe Vercel por cada visita</strong>
+        <ul>
+          <li>La página que visitaste (por ejemplo <code>/guias/qr-wifi/</code>) y de dónde venías (referrer).</li>
+          <li>Ubicación aproximada (país / región / ciudad, no la IP exacta).</li>
+          <li>Tipo de dispositivo, sistema operativo y navegador.</li>
+          <li>Fecha y hora de la visita.</li>
+        </ul>
+      </div>
+      <p>
+        Estos datos se reportan de forma anónima y agregada: no se usan para identificarte, ni para
+        armar un perfil que te siga entre distintos sitios web, ni se cruzan con el contenido que
+        generas en el QR (ese, como se explicó arriba, ni siquiera llega a un servidor).
+      </p>
+
+      <h2>Contacto</h2>
+      <p>
+        Si tienes dudas sobre esta página, puedes abrir un
+        <a href="https://github.com/JuanCarlosJimenezRoman/qr-generator/issues" target="_blank" rel="noopener">issue en GitHub</a>.
+      </p>
+
+      <a class="guide-cta" href="/">← Volver al generador</a>
+    </main>
+
+    <footer class="guide-footer">
+      <a href="/">Generador de QR</a> · Open source, MIT.
+    </footer>
+  </body>
+</html>

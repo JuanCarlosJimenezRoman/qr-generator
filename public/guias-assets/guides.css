@@ -1,0 +1,163 @@
+:root {
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+}
+
+.guide-header {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  padding: 20px 16px;
+}
+
+.guide-header-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.guide-brand {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.guide-cta-top {
+  background: #ffffff;
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+main.guide {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 16px 64px;
+}
+
+main.guide h1 {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+}
+
+main.guide .guide-lead {
+  font-size: 18px;
+  color: var(--color-text-muted);
+  margin: 0 0 28px;
+}
+
+main.guide h2 {
+  font-size: 21px;
+  margin: 36px 0 12px;
+}
+
+main.guide p {
+  margin: 0 0 16px;
+  font-size: 16px;
+}
+
+main.guide ul,
+main.guide ol {
+  margin: 0 0 16px;
+  padding-left: 22px;
+}
+
+main.guide li {
+  margin-bottom: 8px;
+}
+
+main.guide code {
+  background: var(--color-border);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.guide-callout {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+  margin: 28px 0;
+}
+
+.guide-callout strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.guide-cta {
+  display: block;
+  text-align: center;
+  background: var(--color-accent);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 17px;
+  padding: 16px 24px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  margin: 36px 0 12px;
+}
+
+.guide-cta:hover {
+  background: var(--color-accent-hover);
+}
+
+.guide-footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.guide-footer a {
+  color: var(--color-accent);
+}
+
+.guide-related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 8px 0 0;
+}
+
+.guide-related a {
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--color-text);
+  background: var(--color-surface);
+}

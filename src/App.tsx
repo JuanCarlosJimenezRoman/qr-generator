@@ -1,5 +1,7 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import './App.css';
+import { LandingIntro } from './components/LandingIntro';
 import { ContentTypeSelector } from './components/ContentTypeSelector';
 import { ContentSummary } from './components/ContentSummary';
 import { QrPreview, type QrPreviewHandle } from './components/QrPreview';
@@ -62,6 +64,21 @@ function App() {
   const [templateId, setTemplateId] = useState<string>(CUSTOM_TEMPLATE_ID);
   const [downloadFeedback, setDownloadFeedback] = useState<string | null>(null);
   const [urlPlaceholder, setUrlPlaceholder] = useState('ejemplo.com o https://ejemplo.com');
+
+  // Las páginas guía (/guias/...) enlazan de vuelta con ?tipo=wifi|whatsapp|vcard
+  // para dejar preseleccionado el tipo de contenido correcto.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tipo = params.get('tipo');
+    if (tipo === 'wifi' || tipo === 'whatsapp' || tipo === 'vcard' || tipo === 'url') {
+      setContentType(tipo);
+      if (window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    }
+    // Solo al montar: es una preselección inicial, no algo a re-evaluar en cada render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const encodeResult = useMemo(() => {
     switch (contentType) {
@@ -239,6 +256,18 @@ function App() {
           )}
         </section>
       </main>
+
+      <LandingIntro />
+
+      <footer className="app-footer">
+        <a href="https://github.com/JuanCarlosJimenezRoman/qr-generator" target="_blank" rel="noopener">
+          Código abierto en GitHub
+        </a>
+        {' · '}
+        <a href="/privacidad/">Privacidad</a>
+      </footer>
+
+      <Analytics />
     </div>
   );
 }
