@@ -1,6 +1,7 @@
 import type { ErrorCorrectionLevel } from '../content/legibility';
 
 interface DesignOptionsProps {
+  showColorPickers: boolean;
   dotColor: string;
   backgroundColor: string;
   errorCorrectionLevel: ErrorCorrectionLevel;
@@ -17,6 +18,7 @@ const ECC_OPTIONS: { value: ErrorCorrectionLevel; label: string }[] = [
 ];
 
 export function DesignOptions({
+  showColorPickers,
   dotColor,
   backgroundColor,
   errorCorrectionLevel,
@@ -26,26 +28,28 @@ export function DesignOptions({
 }: DesignOptionsProps) {
   return (
     <div className="design-options">
-      <div className="design-options-colors">
-        <div className="form-field">
-          <label htmlFor="dot-color">Color del QR</label>
-          <input
-            id="dot-color"
-            type="color"
-            value={dotColor}
-            onChange={(e) => onDotColorChange(e.target.value)}
-          />
+      {showColorPickers && (
+        <div className="design-options-colors">
+          <div className="form-field">
+            <label htmlFor="dot-color">Color del QR</label>
+            <input
+              id="dot-color"
+              type="color"
+              value={dotColor}
+              onChange={(e) => onDotColorChange(e.target.value)}
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="bg-color">Color de fondo</label>
+            <input
+              id="bg-color"
+              type="color"
+              value={backgroundColor}
+              onChange={(e) => onBackgroundColorChange(e.target.value)}
+            />
+          </div>
         </div>
-        <div className="form-field">
-          <label htmlFor="bg-color">Color de fondo</label>
-          <input
-            id="bg-color"
-            type="color"
-            value={backgroundColor}
-            onChange={(e) => onBackgroundColorChange(e.target.value)}
-          />
-        </div>
-      </div>
+      )}
 
       <div className="form-field">
         <label htmlFor="ecc-level">Nivel de corrección de errores</label>

@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import QRCodeStyling from 'qr-code-styling';
 import type { ErrorCorrectionLevel } from '../content/legibility';
+import type { QrStyle } from '../content/templates';
 
 export interface QrPreviewHandle {
   download: (extension: 'png' | 'svg', fileName: string) => Promise<void>;
@@ -9,8 +10,7 @@ export interface QrPreviewHandle {
 interface QrPreviewProps {
   data: string | null;
   size?: number;
-  color?: string;
-  backgroundColor?: string;
+  style: QrStyle;
   errorCorrectionLevel?: ErrorCorrectionLevel;
   logoImage?: string | null;
 }
@@ -30,14 +30,7 @@ const DOWNLOAD_SIZE = 1000;
 const LOGO_SIZE_RATIO = 0.22;
 
 export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function QrPreview(
-  {
-    data,
-    size = 240,
-    color = '#111111',
-    backgroundColor = '#ffffff',
-    errorCorrectionLevel = 'M',
-    logoImage = null,
-  },
+  { data, size = 240, style, errorCorrectionLevel = 'M', logoImage = null },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,8 +42,19 @@ export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function Qr
     height: targetSize,
     data: data ?? ' ',
     margin: Math.round(targetSize * MARGIN_RATIO),
-    dotsOptions: { color, type: 'square' as const },
-    backgroundOptions: { color: backgroundColor },
+    dotsOptions: {
+      type: style.dotsType,
+      ...(style.dotsGradient ? { gradient: style.dotsGradient } : { color: style.dotsColor ?? '#111111' }),
+    },
+    cornersSquareOptions: {
+      type: style.cornersSquareType,
+      color: style.cornersSquareColor ?? style.dotsColor ?? '#111111',
+    },
+    cornersDotOptions: {
+      type: style.cornersDotType,
+      color: style.cornersDotColor ?? style.dotsColor ?? '#111111',
+    },
+    backgroundOptions: { color: style.backgroundColor },
     qrOptions: { errorCorrectionLevel },
     ...(logoImage
       ? {
@@ -77,7 +81,7 @@ export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function Qr
   useEffect(() => {
     qrRef.current?.update(buildOptions(size));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, size, color, backgroundColor, errorCorrectionLevel, logoImage]);
+  }, [data, size, style, errorCorrectionLevel, logoImage]);
 
   useImperativeHandle(ref, () => ({
     download: async (extension, fileName) => {
