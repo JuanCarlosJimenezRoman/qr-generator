@@ -8,6 +8,7 @@ import { DesignOptions } from './components/DesignOptions';
 import { DesignWarnings } from './components/DesignWarnings';
 import { LogoOptions } from './components/LogoOptions';
 import { TemplateSelector } from './components/TemplateSelector';
+import { DesignAccordion } from './components/DesignAccordion';
 import { UrlForm } from './components/forms/UrlForm';
 import { TextForm } from './components/forms/TextForm';
 import { PhoneForm } from './components/forms/PhoneForm';
@@ -56,6 +57,7 @@ function App() {
   const [errorCorrectionLevel, setErrorCorrectionLevel] = useState<ErrorCorrectionLevel>('M');
   const [logo, setLogo] = useState<string | null>(null);
   const [templateId, setTemplateId] = useState<string>(CUSTOM_TEMPLATE_ID);
+  const [downloadFeedback, setDownloadFeedback] = useState<string | null>(null);
 
   const encodeResult = useMemo(() => {
     switch (contentType) {
@@ -83,23 +85,34 @@ function App() {
 
   const handleDownload = (format: 'png' | 'svg' | 'pdf') => {
     if (!encodeResult.ok) return;
+    
     const fileName = buildQrFileName(contentType);
+    
+    // Feedback visual
+    setDownloadFeedback(`Descargando ${format.toUpperCase()}...`);
+    
     if (format === 'pdf') {
       void qrPreviewRef.current?.downloadPdf(fileName, CONTENT_TYPE_LABELS[contentType]);
     } else {
       void qrPreviewRef.current?.download(format, fileName);
     }
+    
+    // Limpiar feedback después de 2 segundos
+    setTimeout(() => setDownloadFeedback(null), 2000);
   };
+
+  const isQrReady = encodeResult.ok;
 
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Generador de QR</h1>
+        <h1>✨ Generador de QR</h1>
         <p>Gratis, sin límites y sin conexión a ningún servidor: todo se genera en tu navegador.</p>
       </header>
 
       <main className="app-main">
-        <section className="app-panel">
+        {/* Panel Izquierdo: Configuración */}
+        <section className="app-panel app-panel-config">
           <ContentTypeSelector value={contentType} onChange={setContentType} />
 
           <div className="app-form">
@@ -132,45 +145,67 @@ function App() {
           <ContentSummary result={encodeResult} />
         </section>
 
-        <section className="app-preview">
-          <QrPreview
-            ref={qrPreviewRef}
-            data={encodeResult.ok ? encodeResult.value : null}
-            style={qrStyle}
-            errorCorrectionLevel={errorCorrectionLevel}
-            logoImage={logo}
-          />
-          {encodeResult.ok ? (
-            <DownloadButtons disabled={!encodeResult.ok} onDownload={handleDownload} />
-          ) : (
-            <p className="app-preview-hint">Completa el formulario para generar el QR.</p>
-          )}
-          {encodeResult.ok && (
-            <DesignWarnings
-              encodedValue={encodeResult.value}
-              dotColor={primaryDotColor(qrStyle)}
-              backgroundColor={qrStyle.backgroundColor}
-              hasLogo={logo !== null}
+        {/* Panel Derecho: Vista Previa y Acciones */}
+        <section className="app-preview-panel">
+          <div className="app-preview-container">
+            <QrPreview
+              ref={qrPreviewRef}
+              data={isQrReady ? encodeResult.value : null}
+              style={qrStyle}
               errorCorrectionLevel={errorCorrectionLevel}
+              logoImage={logo}
             />
+            
+            {isQrReady ? (
+              <>
+                <DownloadButtons 
+                  disabled={!isQrReady} 
+                  onDownload={handleDownload} 
+                />
+                {downloadFeedback && (
+                  <span className="download-feedback">{downloadFeedback}</span>
+                )}
+              </>
+            ) : (
+              <p className="app-preview-hint">✏️ Completa el formulario para generar el QR</p>
+            )}
+          </div>
+
+          {/* Opciones de personalización (colapsables) */}
+          {isQrReady && (
+            <div className="app-preview-options">
+              <DesignWarnings
+                encodedValue={encodeResult.value}
+                dotColor={primaryDotColor(qrStyle)}
+                backgroundColor={qrStyle.backgroundColor}
+                hasLogo={logo !== null}
+                errorCorrectionLevel={errorCorrectionLevel}
+              />
+
+              <DesignAccordion title="🎨 Personalizar diseño">
+                <TemplateSelector value={templateId} onChange={setTemplateId} />
+                <DesignOptions
+                  showColorPickers={templateId === CUSTOM_TEMPLATE_ID}
+                  dotColor={dotColor}
+                  backgroundColor={backgroundColor}
+                  errorCorrectionLevel={errorCorrectionLevel}
+                  onDotColorChange={(value) => {
+                    setDotColor(value);
+                    setTemplateId(CUSTOM_TEMPLATE_ID);
+                  }}
+                  onBackgroundColorChange={(value) => {
+                    setBackgroundColor(value);
+                    setTemplateId(CUSTOM_TEMPLATE_ID);
+                  }}
+                  onErrorCorrectionLevelChange={setErrorCorrectionLevel}
+                />
+              </DesignAccordion>
+
+              <DesignAccordion title="🖼️ Agregar logo">
+                <LogoOptions logo={logo} onLogoChange={setLogo} />
+              </DesignAccordion>
+            </div>
           )}
-          <TemplateSelector value={templateId} onChange={setTemplateId} />
-          <DesignOptions
-            showColorPickers={templateId === CUSTOM_TEMPLATE_ID}
-            dotColor={dotColor}
-            backgroundColor={backgroundColor}
-            errorCorrectionLevel={errorCorrectionLevel}
-            onDotColorChange={(value) => {
-              setDotColor(value);
-              setTemplateId(CUSTOM_TEMPLATE_ID);
-            }}
-            onBackgroundColorChange={(value) => {
-              setBackgroundColor(value);
-              setTemplateId(CUSTOM_TEMPLATE_ID);
-            }}
-            onErrorCorrectionLevelChange={setErrorCorrectionLevel}
-          />
-          <LogoOptions logo={logo} onLogoChange={setLogo} />
         </section>
       </main>
     </div>
