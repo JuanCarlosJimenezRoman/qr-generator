@@ -14,6 +14,7 @@ import { PhoneForm } from './components/forms/PhoneForm';
 import { EmailForm } from './components/forms/EmailForm';
 import { WifiForm } from './components/forms/WifiForm';
 import { WhatsappForm } from './components/forms/WhatsappForm';
+import { VCardForm } from './components/forms/VCardForm';
 import { encodeContent, type ContentType } from './content/types';
 import { buildQrFileName } from './content/fileName';
 import type { ErrorCorrectionLevel } from './content/legibility';
@@ -24,6 +25,7 @@ import type { PhoneInput } from './content/encoders/phone';
 import type { EmailInput } from './content/encoders/email';
 import type { WifiInput } from './content/encoders/wifi';
 import type { WhatsappInput } from './content/encoders/whatsapp';
+import type { VCardInput } from './content/encoders/vcard';
 
 interface FormState {
   url: UrlInput;
@@ -32,6 +34,7 @@ interface FormState {
   email: EmailInput;
   wifi: WifiInput;
   whatsapp: WhatsappInput;
+  vcard: VCardInput;
 }
 
 const DEFAULT_FORM_STATE: FormState = {
@@ -41,6 +44,7 @@ const DEFAULT_FORM_STATE: FormState = {
   email: { to: '', subject: '', body: '' },
   wifi: { ssid: '', password: '', security: 'WPA', hidden: false },
   whatsapp: { phone: '', message: '' },
+  vcard: { fullName: '', organization: '', title: '', phone: '', email: '', url: '' },
 };
 
 function App() {
@@ -67,6 +71,8 @@ function App() {
         return encodeContent({ type: 'wifi', data: formState.wifi });
       case 'whatsapp':
         return encodeContent({ type: 'whatsapp', data: formState.whatsapp });
+      case 'vcard':
+        return encodeContent({ type: 'vcard', data: formState.vcard });
     }
   }, [contentType, formState]);
 
@@ -112,6 +118,9 @@ function App() {
                 value={formState.whatsapp}
                 onChange={(whatsapp) => setFormState((s) => ({ ...s, whatsapp }))}
               />
+            )}
+            {contentType === 'vcard' && (
+              <VCardForm value={formState.vcard} onChange={(vcard) => setFormState((s) => ({ ...s, vcard }))} />
             )}
           </div>
 

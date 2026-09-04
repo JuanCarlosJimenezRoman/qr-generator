@@ -7,6 +7,7 @@ const LABELS: Record<ContentType, string> = {
   email: 'correo',
   wifi: 'wifi',
   whatsapp: 'whatsapp',
+  vcard: 'contacto',
 };
 
 /**
