@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import QRCodeStyling from 'qr-code-styling';
 import type { ErrorCorrectionLevel } from '../content/legibility';
+import type { QrStyle } from '../content/templates';
 
 export interface QrPreviewHandle {
   download: (extension: 'png' | 'svg', fileName: string) => Promise<void>;
@@ -9,9 +10,9 @@ export interface QrPreviewHandle {
 interface QrPreviewProps {
   data: string | null;
   size?: number;
-  color?: string;
-  backgroundColor?: string;
+  style: QrStyle;
   errorCorrectionLevel?: ErrorCorrectionLevel;
+  logoImage?: string | null;
 }
 
 // El margen (quiet zone) se calcula como proporción del tamaño en vez de un
@@ -23,8 +24,13 @@ const MARGIN_RATIO = 0.08;
 // para que el PNG se pueda imprimir o ampliar sin perder nitidez.
 const DOWNLOAD_SIZE = 1000;
 
+// Proporción del ancho del QR que ocupa el logo. Se mantiene conservadora
+// (en vez del 0.4 por defecto de la librería) para no tapar demasiados
+// módulos, incluso con corrección de errores alta.
+const LOGO_SIZE_RATIO = 0.22;
+
 export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function QrPreview(
-  { data, size = 240, color = '#111111', backgroundColor = '#ffffff', errorCorrectionLevel = 'M' },
+  { data, size = 240, style, errorCorrectionLevel = 'M', logoImage = null },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -36,9 +42,30 @@ export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function Qr
     height: targetSize,
     data: data ?? ' ',
     margin: Math.round(targetSize * MARGIN_RATIO),
-    dotsOptions: { color, type: 'square' as const },
-    backgroundOptions: { color: backgroundColor },
+    dotsOptions: {
+      type: style.dotsType,
+      ...(style.dotsGradient ? { gradient: style.dotsGradient } : { color: style.dotsColor ?? '#111111' }),
+    },
+    cornersSquareOptions: {
+      type: style.cornersSquareType,
+      color: style.cornersSquareColor ?? style.dotsColor ?? '#111111',
+    },
+    cornersDotOptions: {
+      type: style.cornersDotType,
+      color: style.cornersDotColor ?? style.dotsColor ?? '#111111',
+    },
+    backgroundOptions: { color: style.backgroundColor },
     qrOptions: { errorCorrectionLevel },
+    ...(logoImage
+      ? {
+          image: logoImage,
+          imageOptions: {
+            hideBackgroundDots: true,
+            imageSize: LOGO_SIZE_RATIO,
+            margin: Math.round(targetSize * 0.015),
+          },
+        }
+      : {}),
   });
 
   useEffect(() => {
@@ -54,7 +81,7 @@ export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function Qr
   useEffect(() => {
     qrRef.current?.update(buildOptions(size));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, size, color, backgroundColor, errorCorrectionLevel]);
+  }, [data, size, style, errorCorrectionLevel, logoImage]);
 
   useImperativeHandle(ref, () => ({
     download: async (extension, fileName) => {

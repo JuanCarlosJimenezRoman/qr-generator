@@ -6,6 +6,8 @@ import { QrPreview, type QrPreviewHandle } from './components/QrPreview';
 import { DownloadButtons } from './components/DownloadButtons';
 import { DesignOptions } from './components/DesignOptions';
 import { DesignWarnings } from './components/DesignWarnings';
+import { LogoOptions } from './components/LogoOptions';
+import { TemplateSelector } from './components/TemplateSelector';
 import { UrlForm } from './components/forms/UrlForm';
 import { TextForm } from './components/forms/TextForm';
 import { PhoneForm } from './components/forms/PhoneForm';
@@ -15,6 +17,7 @@ import { WhatsappForm } from './components/forms/WhatsappForm';
 import { encodeContent, type ContentType } from './content/types';
 import { buildQrFileName } from './content/fileName';
 import type { ErrorCorrectionLevel } from './content/legibility';
+import { CUSTOM_TEMPLATE_ID, primaryDotColor, resolveQrStyle } from './content/templates';
 import type { UrlInput } from './content/encoders/url';
 import type { TextInput } from './content/encoders/text';
 import type { PhoneInput } from './content/encoders/phone';
@@ -47,6 +50,8 @@ function App() {
   const [dotColor, setDotColor] = useState('#111111');
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
   const [errorCorrectionLevel, setErrorCorrectionLevel] = useState<ErrorCorrectionLevel>('M');
+  const [logo, setLogo] = useState<string | null>(null);
+  const [templateId, setTemplateId] = useState<string>(CUSTOM_TEMPLATE_ID);
 
   const encodeResult = useMemo(() => {
     switch (contentType) {
@@ -64,6 +69,11 @@ function App() {
         return encodeContent({ type: 'whatsapp', data: formState.whatsapp });
     }
   }, [contentType, formState]);
+
+  const qrStyle = useMemo(
+    () => resolveQrStyle(templateId, { dotColor, backgroundColor }),
+    [templateId, dotColor, backgroundColor],
+  );
 
   const handleDownload = (extension: 'png' | 'svg') => {
     if (!encodeResult.ok) return;
@@ -112,9 +122,9 @@ function App() {
           <QrPreview
             ref={qrPreviewRef}
             data={encodeResult.ok ? encodeResult.value : null}
-            color={dotColor}
-            backgroundColor={backgroundColor}
+            style={qrStyle}
             errorCorrectionLevel={errorCorrectionLevel}
+            logoImage={logo}
           />
           {encodeResult.ok ? (
             <DownloadButtons disabled={!encodeResult.ok} onDownload={handleDownload} />
@@ -124,18 +134,29 @@ function App() {
           {encodeResult.ok && (
             <DesignWarnings
               encodedValue={encodeResult.value}
-              dotColor={dotColor}
-              backgroundColor={backgroundColor}
+              dotColor={primaryDotColor(qrStyle)}
+              backgroundColor={qrStyle.backgroundColor}
+              hasLogo={logo !== null}
+              errorCorrectionLevel={errorCorrectionLevel}
             />
           )}
+          <TemplateSelector value={templateId} onChange={setTemplateId} />
           <DesignOptions
+            showColorPickers={templateId === CUSTOM_TEMPLATE_ID}
             dotColor={dotColor}
             backgroundColor={backgroundColor}
             errorCorrectionLevel={errorCorrectionLevel}
-            onDotColorChange={setDotColor}
-            onBackgroundColorChange={setBackgroundColor}
+            onDotColorChange={(value) => {
+              setDotColor(value);
+              setTemplateId(CUSTOM_TEMPLATE_ID);
+            }}
+            onBackgroundColorChange={(value) => {
+              setBackgroundColor(value);
+              setTemplateId(CUSTOM_TEMPLATE_ID);
+            }}
             onErrorCorrectionLevelChange={setErrorCorrectionLevel}
           />
+          <LogoOptions logo={logo} onLogoChange={setLogo} />
         </section>
       </main>
     </div>

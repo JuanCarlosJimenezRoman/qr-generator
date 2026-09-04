@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   checkContentLength,
   checkContrast,
+  checkLogoErrorCorrection,
   COMFORTABLE_CONTENT_BYTES,
   MIN_SAFE_CONTRAST_RATIO,
 } from './legibility';
@@ -57,5 +58,22 @@ describe('checkContentLength', () => {
   it('cuenta bytes UTF-8, no caracteres (los acentos ocupan mas de 1 byte)', () => {
     const result = checkContentLength('ñ');
     expect(result.bytes).toBe(2);
+  });
+});
+
+describe('checkLogoErrorCorrection', () => {
+  it('siempre es válido si no hay logo, sin importar el nivel', () => {
+    expect(checkLogoErrorCorrection(false, 'L').ok).toBe(true);
+    expect(checkLogoErrorCorrection(false, 'M').ok).toBe(true);
+  });
+
+  it('con logo, requiere nivel Q o H', () => {
+    expect(checkLogoErrorCorrection(true, 'Q').ok).toBe(true);
+    expect(checkLogoErrorCorrection(true, 'H').ok).toBe(true);
+  });
+
+  it('con logo, marca como no válidos los niveles L y M', () => {
+    expect(checkLogoErrorCorrection(true, 'L').ok).toBe(false);
+    expect(checkLogoErrorCorrection(true, 'M').ok).toBe(false);
   });
 });
