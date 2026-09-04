@@ -58,7 +58,14 @@ export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function Qr
     margin: Math.round(targetSize * MARGIN_RATIO),
     dotsOptions: {
       type: style.dotsType,
-      ...(style.dotsGradient ? { gradient: style.dotsGradient } : { color: style.dotsColor ?? '#111111' }),
+      // Siempre se fijan ambas claves (no un spread condicional): qr-code-styling
+      // fusiona (deep-merge) las opciones nuevas con las anteriores en vez de
+      // reemplazarlas, así que si solo se manda `color` al cambiar de una
+      // plantilla con gradiente (p. ej. Instagram) a una de color plano, el
+      // `gradient` previo queda "pegado" en el estado interno y se sigue
+      // dibujando. Mandar `gradient: undefined` lo limpia explícitamente.
+      color: style.dotsGradient ? undefined : (style.dotsColor ?? '#111111'),
+      gradient: style.dotsGradient,
     },
     cornersSquareOptions: {
       type: style.cornersSquareType,
