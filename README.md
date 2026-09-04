@@ -1,6 +1,6 @@
 # QR Generator
 
-**[Pruébalo en vivo → qr-gratis.vercel.app](https://qr-gratis.vercel.app)**
+**[Pruébalo en vivo → qr-gratis-facil.vercel.app](https://qr-gratis-facil.vercel.app)**
 
 Generador de códigos QR **gratuito, sin límites y open source**. Corre 100% en el navegador: nada del contenido que capturas (enlaces, WiFi, contactos, etc.) se envía a ningún servidor.
 
@@ -21,14 +21,14 @@ Los requerimientos completos del proyecto (funcionales, técnicos y de alcance) 
 - Personalización de colores, degradados, forma de los módulos, nivel de corrección de errores y **logo central**.
 - Descarga en **PNG, SVG y PDF**, sin marcas de agua.
 - Sin cuentas, sin backend, sin rastreo del contenido que generas.
-- Guías de uso indexables: [QR para WiFi](https://qr-gratis.vercel.app/guias/qr-wifi/), [QR para WhatsApp Business](https://qr-gratis.vercel.app/guias/qr-whatsapp-business/), [QR vCard / tarjeta digital](https://qr-gratis.vercel.app/guias/qr-vcard-tarjeta-digital/).
+- Guías de uso indexables: [QR para WiFi](https://qr-gratis-facil.vercel.app/guias/qr-wifi/), [QR para WhatsApp Business](https://qr-gratis-facil.vercel.app/guias/qr-whatsapp-business/), [QR vCard / tarjeta digital](https://qr-gratis-facil.vercel.app/guias/qr-vcard-tarjeta-digital/).
 
 ## Stack
 
 - [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vite.dev/)
 - [qr-code-styling](https://github.com/kozakdenys/qr-code-styling) para la generación del QR en el cliente
 - [jsPDF](https://github.com/parallax/jsPDF) para la exportación a PDF (se carga solo cuando se usa)
-- [Vercel Web Analytics](https://vercel.com/docs/analytics) (sin cookies) para medir tráfico agregado — ver [`/privacidad`](https://qr-gratis.vercel.app/privacidad/)
+- [Vercel Web Analytics](https://vercel.com/docs/analytics) (sin cookies) para medir tráfico agregado — ver [`/privacidad`](https://qr-gratis-facil.vercel.app/privacidad/)
 
 ## Desarrollo local (self-hosting)
 
