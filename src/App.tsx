@@ -8,6 +8,8 @@ import { DesignOptions } from './components/DesignOptions';
 import { DesignWarnings } from './components/DesignWarnings';
 import { LogoOptions } from './components/LogoOptions';
 import { TemplateSelector } from './components/TemplateSelector';
+import { SocialSelector } from './components/SocialSelector';
+import { SocialPreview } from './components/SocialPreview';
 import { DesignAccordion } from './components/DesignAccordion';
 import { UrlForm } from './components/forms/UrlForm';
 import { TextForm } from './components/forms/TextForm';
@@ -20,6 +22,7 @@ import { CONTENT_TYPE_LABELS, encodeContent, type ContentType } from './content/
 import { buildQrFileName } from './content/fileName';
 import type { ErrorCorrectionLevel } from './content/legibility';
 import { CUSTOM_TEMPLATE_ID, primaryDotColor, resolveQrStyle } from './content/templates';
+import { SOCIAL_TEMPLATES, type SocialTemplate } from './content/socialTemplates';
 import type { UrlInput } from './content/encoders/url';
 import type { TextInput } from './content/encoders/text';
 import type { PhoneInput } from './content/encoders/phone';
@@ -58,6 +61,7 @@ function App() {
   const [logo, setLogo] = useState<string | null>(null);
   const [templateId, setTemplateId] = useState<string>(CUSTOM_TEMPLATE_ID);
   const [downloadFeedback, setDownloadFeedback] = useState<string | null>(null);
+  const [urlPlaceholder, setUrlPlaceholder] = useState('ejemplo.com o https://ejemplo.com');
 
   const encodeResult = useMemo(() => {
     switch (contentType) {
@@ -82,6 +86,20 @@ function App() {
     () => resolveQrStyle(templateId, { dotColor, backgroundColor }),
     [templateId, dotColor, backgroundColor],
   );
+
+  const activeSocial: SocialTemplate | null =
+    contentType === 'url' ? SOCIAL_TEMPLATES.find((s) => s.id === templateId) ?? null : null;
+
+  const handleSocialSelect = (social: SocialTemplate) => {
+    setContentType('url');
+    setUrlPlaceholder(social.placeholder);
+    setTemplateId(social.id);
+  };
+
+  const handleContentTypeChange = (type: ContentType) => {
+    setContentType(type);
+    setUrlPlaceholder('ejemplo.com o https://ejemplo.com');
+  };
 
   const handleDownload = (format: 'png' | 'svg' | 'pdf') => {
     if (!encodeResult.ok) return;
@@ -113,11 +131,24 @@ function App() {
       <main className="app-main">
         {/* Panel Izquierdo: Configuración */}
         <section className="app-panel app-panel-config">
-          <ContentTypeSelector value={contentType} onChange={setContentType} />
+          <SocialSelector activeId={activeSocial?.id ?? null} onSelect={handleSocialSelect} />
+
+          <ContentTypeSelector value={contentType} onChange={handleContentTypeChange} />
 
           <div className="app-form">
             {contentType === 'url' && (
-              <UrlForm value={formState.url} onChange={(url) => setFormState((s) => ({ ...s, url }))} />
+              <>
+                <UrlForm
+                  value={formState.url}
+                  onChange={(url) => setFormState((s) => ({ ...s, url }))}
+                  placeholder={urlPlaceholder}
+                />
+                <SocialPreview
+                  social={activeSocial}
+                  url={formState.url.url}
+                  encodedUrl={encodeResult.ok ? encodeResult.value : null}
+                />
+              </>
             )}
             {contentType === 'text' && (
               <TextForm value={formState.text} onChange={(text) => setFormState((s) => ({ ...s, text }))} />
