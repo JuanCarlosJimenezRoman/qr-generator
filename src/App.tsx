@@ -6,6 +6,7 @@ import { QrPreview, type QrPreviewHandle } from './components/QrPreview';
 import { DownloadButtons } from './components/DownloadButtons';
 import { DesignOptions } from './components/DesignOptions';
 import { DesignWarnings } from './components/DesignWarnings';
+import { LogoOptions } from './components/LogoOptions';
 import { UrlForm } from './components/forms/UrlForm';
 import { TextForm } from './components/forms/TextForm';
 import { PhoneForm } from './components/forms/PhoneForm';
@@ -47,6 +48,7 @@ function App() {
   const [dotColor, setDotColor] = useState('#111111');
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
   const [errorCorrectionLevel, setErrorCorrectionLevel] = useState<ErrorCorrectionLevel>('M');
+  const [logo, setLogo] = useState<string | null>(null);
 
   const encodeResult = useMemo(() => {
     switch (contentType) {
@@ -115,6 +117,7 @@ function App() {
             color={dotColor}
             backgroundColor={backgroundColor}
             errorCorrectionLevel={errorCorrectionLevel}
+            logoImage={logo}
           />
           {encodeResult.ok ? (
             <DownloadButtons disabled={!encodeResult.ok} onDownload={handleDownload} />
@@ -126,6 +129,8 @@ function App() {
               encodedValue={encodeResult.value}
               dotColor={dotColor}
               backgroundColor={backgroundColor}
+              hasLogo={logo !== null}
+              errorCorrectionLevel={errorCorrectionLevel}
             />
           )}
           <DesignOptions
@@ -136,6 +141,7 @@ function App() {
             onBackgroundColorChange={setBackgroundColor}
             onErrorCorrectionLevelChange={setErrorCorrectionLevel}
           />
+          <LogoOptions logo={logo} onLogoChange={setLogo} />
         </section>
       </main>
     </div>

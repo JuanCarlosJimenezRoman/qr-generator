@@ -60,3 +60,21 @@ export function checkContentLength(value: string): ContentLengthResult {
   const bytes = new TextEncoder().encode(value).length;
   return { bytes, ok: bytes <= COMFORTABLE_CONTENT_BYTES };
 }
+
+export interface LogoEccResult {
+  ok: boolean;
+}
+
+// Un logo tapa módulos del centro del QR: sin suficiente corrección de
+// errores, el escáner puede no reconstruir la parte cubierta y el QR deja de
+// leerse. Q (25%) o H (30%) dan margen suficiente para un logo de tamaño
+// moderado; L y M no.
+export function checkLogoErrorCorrection(
+  hasLogo: boolean,
+  level: ErrorCorrectionLevel,
+): LogoEccResult {
+  if (!hasLogo) {
+    return { ok: true };
+  }
+  return { ok: level === 'Q' || level === 'H' };
+}

@@ -12,6 +12,7 @@ interface QrPreviewProps {
   color?: string;
   backgroundColor?: string;
   errorCorrectionLevel?: ErrorCorrectionLevel;
+  logoImage?: string | null;
 }
 
 // El margen (quiet zone) se calcula como proporción del tamaño en vez de un
@@ -23,8 +24,20 @@ const MARGIN_RATIO = 0.08;
 // para que el PNG se pueda imprimir o ampliar sin perder nitidez.
 const DOWNLOAD_SIZE = 1000;
 
+// Proporción del ancho del QR que ocupa el logo. Se mantiene conservadora
+// (en vez del 0.4 por defecto de la librería) para no tapar demasiados
+// módulos, incluso con corrección de errores alta.
+const LOGO_SIZE_RATIO = 0.22;
+
 export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function QrPreview(
-  { data, size = 240, color = '#111111', backgroundColor = '#ffffff', errorCorrectionLevel = 'M' },
+  {
+    data,
+    size = 240,
+    color = '#111111',
+    backgroundColor = '#ffffff',
+    errorCorrectionLevel = 'M',
+    logoImage = null,
+  },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -39,6 +52,16 @@ export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function Qr
     dotsOptions: { color, type: 'square' as const },
     backgroundOptions: { color: backgroundColor },
     qrOptions: { errorCorrectionLevel },
+    ...(logoImage
+      ? {
+          image: logoImage,
+          imageOptions: {
+            hideBackgroundDots: true,
+            imageSize: LOGO_SIZE_RATIO,
+            margin: Math.round(targetSize * 0.015),
+          },
+        }
+      : {}),
   });
 
   useEffect(() => {
@@ -54,7 +77,7 @@ export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function Qr
   useEffect(() => {
     qrRef.current?.update(buildOptions(size));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, size, color, backgroundColor, errorCorrectionLevel]);
+  }, [data, size, color, backgroundColor, errorCorrectionLevel, logoImage]);
 
   useImperativeHandle(ref, () => ({
     download: async (extension, fileName) => {
