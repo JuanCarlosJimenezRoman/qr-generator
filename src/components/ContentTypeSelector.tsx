@@ -16,13 +16,12 @@ const OPTIONS: { value: ContentType; label: string }[] = [
 
 export function ContentTypeSelector({ value, onChange }: ContentTypeSelectorProps) {
   return (
-    <div className="type-selector" role="tablist" aria-label="Tipo de contenido">
+    <div className="type-selector" role="group" aria-label="Tipo de contenido">
       {OPTIONS.map((option) => (
         <button
           key={option.value}
           type="button"
-          role="tab"
-          aria-selected={value === option.value}
+          aria-pressed={value === option.value}
           className={`type-selector-btn${value === option.value ? ' is-active' : ''}`}
           onClick={() => onChange(option.value)}
         >

@@ -7,7 +7,7 @@ interface ContentSummaryProps {
 export function ContentSummary({ result }: ContentSummaryProps) {
   if (result.ok) {
     return (
-      <div className="content-summary content-summary-ok">
+      <div className="content-summary content-summary-ok" aria-live="polite">
         <span className="content-summary-label">Esto es exactamente lo que se codificará:</span>
         <code>{result.value}</code>
       </div>
