@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import './App.css';
 import { ContentTypeSelector } from './components/ContentTypeSelector';
 import { ContentSummary } from './components/ContentSummary';
-import { QrPreview } from './components/QrPreview';
+import { QrPreview, type QrPreviewHandle } from './components/QrPreview';
+import { DownloadButtons } from './components/DownloadButtons';
 import { UrlForm } from './components/forms/UrlForm';
 import { TextForm } from './components/forms/TextForm';
 import { PhoneForm } from './components/forms/PhoneForm';
@@ -10,6 +11,7 @@ import { EmailForm } from './components/forms/EmailForm';
 import { WifiForm } from './components/forms/WifiForm';
 import { WhatsappForm } from './components/forms/WhatsappForm';
 import { encodeContent, type ContentType } from './content/types';
+import { buildQrFileName } from './content/fileName';
 import type { UrlInput } from './content/encoders/url';
 import type { TextInput } from './content/encoders/text';
 import type { PhoneInput } from './content/encoders/phone';
@@ -38,6 +40,7 @@ const DEFAULT_FORM_STATE: FormState = {
 function App() {
   const [contentType, setContentType] = useState<ContentType>('url');
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
+  const qrPreviewRef = useRef<QrPreviewHandle>(null);
 
   const encodeResult = useMemo(() => {
     switch (contentType) {
@@ -55,6 +58,11 @@ function App() {
         return encodeContent({ type: 'whatsapp', data: formState.whatsapp });
     }
   }, [contentType, formState]);
+
+  const handleDownload = (extension: 'png' | 'svg') => {
+    if (!encodeResult.ok) return;
+    void qrPreviewRef.current?.download(extension, buildQrFileName(contentType));
+  };
 
   return (
     <div className="app">
@@ -95,8 +103,12 @@ function App() {
         </section>
 
         <section className="app-preview">
-          <QrPreview data={encodeResult.ok ? encodeResult.value : null} />
-          {!encodeResult.ok && <p className="app-preview-hint">Completa el formulario para generar el QR.</p>}
+          <QrPreview ref={qrPreviewRef} data={encodeResult.ok ? encodeResult.value : null} />
+          {encodeResult.ok ? (
+            <DownloadButtons disabled={!encodeResult.ok} onDownload={handleDownload} />
+          ) : (
+            <p className="app-preview-hint">Completa el formulario para generar el QR.</p>
+          )}
         </section>
       </main>
     </div>
