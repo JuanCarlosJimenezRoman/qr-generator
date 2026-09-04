@@ -4,3 +4,4 @@ export * from './phone';
 export * from './email';
 export * from './wifi';
 export * from './whatsapp';
+export * from './vcard';

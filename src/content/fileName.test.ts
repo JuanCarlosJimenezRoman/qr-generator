@@ -11,6 +11,7 @@ describe('buildQrFileName', () => {
       ['email', 'qr-correo'],
       ['wifi', 'qr-wifi'],
       ['whatsapp', 'qr-whatsapp'],
+      ['vcard', 'qr-contacto'],
     ];
 
     for (const [type, expected] of cases) {
@@ -19,7 +20,7 @@ describe('buildQrFileName', () => {
   });
 
   it('no contiene espacios ni caracteres fuera de a-z0-9-', () => {
-    const types: ContentType[] = ['url', 'text', 'phone', 'email', 'wifi', 'whatsapp'];
+    const types: ContentType[] = ['url', 'text', 'phone', 'email', 'wifi', 'whatsapp', 'vcard'];
     for (const type of types) {
       expect(buildQrFileName(type)).toMatch(/^[a-z0-9-]+$/);
     }

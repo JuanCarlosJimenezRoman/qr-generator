@@ -5,8 +5,9 @@ import { encodePhone, type PhoneInput } from './encoders/phone';
 import { encodeEmail, type EmailInput } from './encoders/email';
 import { encodeWifi, type WifiInput } from './encoders/wifi';
 import { encodeWhatsapp, type WhatsappInput } from './encoders/whatsapp';
+import { encodeVCard, type VCardInput } from './encoders/vcard';
 
-export type ContentType = 'url' | 'text' | 'phone' | 'email' | 'wifi' | 'whatsapp';
+export type ContentType = 'url' | 'text' | 'phone' | 'email' | 'wifi' | 'whatsapp' | 'vcard';
 
 export type ContentInput =
   | { type: 'url'; data: UrlInput }
@@ -14,7 +15,8 @@ export type ContentInput =
   | { type: 'phone'; data: PhoneInput }
   | { type: 'email'; data: EmailInput }
   | { type: 'wifi'; data: WifiInput }
-  | { type: 'whatsapp'; data: WhatsappInput };
+  | { type: 'whatsapp'; data: WhatsappInput }
+  | { type: 'vcard'; data: VCardInput };
 
 export function encodeContent(input: ContentInput): EncodeResult {
   switch (input.type) {
@@ -30,5 +32,7 @@ export function encodeContent(input: ContentInput): EncodeResult {
       return encodeWifi(input.data);
     case 'whatsapp':
       return encodeWhatsapp(input.data);
+    case 'vcard':
+      return encodeVCard(input.data);
   }
 }

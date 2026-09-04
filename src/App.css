@@ -180,6 +180,7 @@
 .content-summary-ok code {
   font-family: var(--font-mono);
   color: var(--color-text);
+  white-space: pre-wrap;
 }
 
 .content-summary-error {

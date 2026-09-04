@@ -12,6 +12,7 @@ const OPTIONS: { value: ContentType; label: string }[] = [
   { value: 'email', label: 'Correo' },
   { value: 'wifi', label: 'WiFi' },
   { value: 'whatsapp', label: 'WhatsApp' },
+  { value: 'vcard', label: 'Contacto' },
 ];
 
 export function ContentTypeSelector({ value, onChange }: ContentTypeSelectorProps) {
