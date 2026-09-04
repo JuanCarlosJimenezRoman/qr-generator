@@ -9,6 +9,17 @@ import { encodeVCard, type VCardInput } from './encoders/vcard';
 
 export type ContentType = 'url' | 'text' | 'phone' | 'email' | 'wifi' | 'whatsapp' | 'vcard';
 
+// Nombre legible por tipo de contenido, usado en la UI y en el PDF exportado.
+export const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
+  url: 'Enlace',
+  text: 'Texto',
+  phone: 'Teléfono',
+  email: 'Correo',
+  wifi: 'WiFi',
+  whatsapp: 'WhatsApp',
+  vcard: 'Contacto',
+};
+
 export type ContentInput =
   | { type: 'url'; data: UrlInput }
   | { type: 'text'; data: TextInput }
