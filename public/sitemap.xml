@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://qr-gratis.vercel.app/</loc>
+    <loc>https://qr-gratis-facil.vercel.app/</loc>
     <lastmod>2026-09-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://qr-gratis.vercel.app/guias/qr-wifi/</loc>
+    <loc>https://qr-gratis-facil.vercel.app/guias/qr-wifi/</loc>
     <lastmod>2026-09-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://qr-gratis.vercel.app/guias/qr-whatsapp-business/</loc>
+    <loc>https://qr-gratis-facil.vercel.app/guias/qr-whatsapp-business/</loc>
     <lastmod>2026-09-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://qr-gratis.vercel.app/guias/qr-vcard-tarjeta-digital/</loc>
+    <loc>https://qr-gratis-facil.vercel.app/guias/qr-vcard-tarjeta-digital/</loc>
     <lastmod>2026-09-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://qr-gratis.vercel.app/privacidad/</loc>
+    <loc>https://qr-gratis-facil.vercel.app/privacidad/</loc>
     <lastmod>2026-09-04</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
