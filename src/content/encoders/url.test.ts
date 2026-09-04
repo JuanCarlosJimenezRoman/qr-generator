@@ -28,4 +28,25 @@ describe('encodeUrl', () => {
   it('rechaza texto que no es una URL válida', () => {
     expect(encodeUrl({ url: 'no es una url' }).ok).toBe(false);
   });
+
+  it('conserva parámetros de query no relacionados con seguimiento cuando cleanTracking es true', () => {
+    const result = encodeUrl({ url: 'ejemplo.com/pagina?id=42', cleanTracking: true });
+    expect(result).toEqual({ ok: true, value: 'https://ejemplo.com/pagina?id=42' });
+  });
+
+  it('quita parámetros de seguimiento (utm, fbclid, mibextid) cuando cleanTracking es true', () => {
+    const result = encodeUrl({
+      url: 'https://www.facebook.com/profile.php?id=61586114027952&mibextid=wwXIfr&mibextid=wwXIfr',
+      cleanTracking: true,
+    });
+    expect(result).toEqual({
+      ok: true,
+      value: 'https://www.facebook.com/profile.php?id=61586114027952',
+    });
+  });
+
+  it('no quita parámetros de seguimiento si cleanTracking no está activado', () => {
+    const result = encodeUrl({ url: 'https://ejemplo.com/?utm_source=x' });
+    expect(result).toEqual({ ok: true, value: 'https://ejemplo.com/?utm_source=x' });
+  });
 });

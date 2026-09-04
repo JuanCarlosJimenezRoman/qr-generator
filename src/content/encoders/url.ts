@@ -1,7 +1,10 @@
 import { type EncodeResult, ok, err } from '../result';
+import { stripTrackingParams } from './trackingParams';
 
 export interface UrlInput {
   url: string;
+  /** Si es true, quita parámetros de seguimiento conocidos (utm_, fbclid, mibextid, etc.). */
+  cleanTracking?: boolean;
 }
 
 const HAS_PROTOCOL = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//;
@@ -30,5 +33,11 @@ export function encodeUrl(input: UrlInput): EncodeResult {
     return err('Solo se admiten URLs http:// o https://.');
   }
 
-  return ok(parsed.toString());
+  const normalized = parsed.toString();
+
+  if (input.cleanTracking) {
+    return ok(stripTrackingParams(normalized).url);
+  }
+
+  return ok(normalized);
 }
