@@ -1,10 +1,11 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import QRCodeStyling from 'qr-code-styling';
-import type { ErrorCorrectionLevel } from '../content/legibility';
+import { checkContentLength, type ErrorCorrectionLevel } from '../content/legibility';
 import type { QrStyle } from '../content/templates';
 
 export interface QrPreviewHandle {
   download: (extension: 'png' | 'svg', fileName: string) => Promise<void>;
+  downloadPdf: (fileName: string, label: string) => Promise<void>;
 }
 
 interface QrPreviewProps {
@@ -21,13 +22,26 @@ interface QrPreviewProps {
 const MARGIN_RATIO = 0.08;
 
 // Las descargas se generan en una resolución mayor a la del preview en pantalla,
-// para que el PNG se pueda imprimir o ampliar sin perder nitidez.
+// para que el PNG (y el PDF, que reusa esa imagen) se puedan imprimir o
+// ampliar sin perder nitidez.
 const DOWNLOAD_SIZE = 1000;
 
 // Proporción del ancho del QR que ocupa el logo. Se mantiene conservadora
 // (en vez del 0.4 por defecto de la librería) para no tapar demasiados
 // módulos, incluso con corrección de errores alta.
 const LOGO_SIZE_RATIO = 0.22;
+
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') resolve(reader.result);
+      else reject(new Error('No se pudo leer la imagen del QR.'));
+    };
+    reader.onerror = () => reject(reader.error ?? new Error('No se pudo leer la imagen del QR.'));
+    reader.readAsDataURL(blob);
+  });
+}
 
 export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function QrPreview(
   { data, size = 240, style, errorCorrectionLevel = 'M', logoImage = null },
@@ -90,6 +104,40 @@ export const QrPreview = forwardRef<QrPreviewHandle, QrPreviewProps>(function Qr
       // el preview que el usuario está viendo.
       const exportQr = new QRCodeStyling(buildOptions(DOWNLOAD_SIZE));
       await exportQr.download({ name: fileName, extension });
+    },
+    downloadPdf: async (fileName, label) => {
+      if (!data) return;
+
+      // jsPDF se carga solo cuando el usuario pide un PDF (import dinámico),
+      // para no aumentar el peso inicial de la app para todo el mundo.
+      const { default: jsPDF } = await import('jspdf');
+
+      const exportQr = new QRCodeStyling(buildOptions(DOWNLOAD_SIZE));
+      const raw = await exportQr.getRawData('png');
+      if (!raw || !(raw instanceof Blob)) return;
+      const imageDataUrl = await blobToDataUrl(raw);
+
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const qrSizeMm = 120;
+      const qrX = (pageWidth - qrSizeMm) / 2;
+      const qrY = 50;
+
+      doc.setFontSize(16);
+      doc.text(label, pageWidth / 2, qrY - 15, { align: 'center' });
+
+      doc.addImage(imageDataUrl, 'PNG', qrX, qrY, qrSizeMm, qrSizeMm);
+
+      // Solo se muestra el contenido como texto de referencia si es corto y
+      // de una sola línea (por ejemplo un enlace o un teléfono); un vCard o
+      // un texto largo no aportan como pie de página.
+      if (!data.includes('\n') && checkContentLength(data).ok) {
+        doc.setFontSize(10);
+        const lines = doc.splitTextToSize(data, pageWidth - 40);
+        doc.text(lines, pageWidth / 2, qrY + qrSizeMm + 12, { align: 'center' });
+      }
+
+      doc.save(`${fileName}.pdf`);
     },
   }));
 

@@ -1,6 +1,8 @@
+export type DownloadFormat = 'png' | 'svg' | 'pdf';
+
 interface DownloadButtonsProps {
   disabled: boolean;
-  onDownload: (extension: 'png' | 'svg') => void;
+  onDownload: (format: DownloadFormat) => void;
 }
 
 export function DownloadButtons({ disabled, onDownload }: DownloadButtonsProps) {
@@ -25,6 +27,15 @@ export function DownloadButtons({ disabled, onDownload }: DownloadButtonsProps) 
         onClick={() => onDownload('svg')}
       >
         Descargar SVG
+      </button>
+      <button
+        type="button"
+        disabled={disabled}
+        title={disabledHint}
+        aria-disabled={disabled}
+        onClick={() => onDownload('pdf')}
+      >
+        Descargar PDF
       </button>
     </div>
   );

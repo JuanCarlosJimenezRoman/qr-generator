@@ -15,7 +15,7 @@ import { EmailForm } from './components/forms/EmailForm';
 import { WifiForm } from './components/forms/WifiForm';
 import { WhatsappForm } from './components/forms/WhatsappForm';
 import { VCardForm } from './components/forms/VCardForm';
-import { encodeContent, type ContentType } from './content/types';
+import { CONTENT_TYPE_LABELS, encodeContent, type ContentType } from './content/types';
 import { buildQrFileName } from './content/fileName';
 import type { ErrorCorrectionLevel } from './content/legibility';
 import { CUSTOM_TEMPLATE_ID, primaryDotColor, resolveQrStyle } from './content/templates';
@@ -81,9 +81,14 @@ function App() {
     [templateId, dotColor, backgroundColor],
   );
 
-  const handleDownload = (extension: 'png' | 'svg') => {
+  const handleDownload = (format: 'png' | 'svg' | 'pdf') => {
     if (!encodeResult.ok) return;
-    void qrPreviewRef.current?.download(extension, buildQrFileName(contentType));
+    const fileName = buildQrFileName(contentType);
+    if (format === 'pdf') {
+      void qrPreviewRef.current?.downloadPdf(fileName, CONTENT_TYPE_LABELS[contentType]);
+    } else {
+      void qrPreviewRef.current?.download(format, fileName);
+    }
   };
 
   return (
