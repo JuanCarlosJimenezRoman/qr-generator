@@ -1,0 +1,24 @@
+<!-- /public/frames/standard/minimal.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <!-- Texto configurable -->
+    <style>
+      .frame-text { fill: {{textColor}}; font-family: 'Arial', sans-serif; font-weight: bold; font-size: 14px; text-anchor: middle; }
+      .frame-bg { fill: {{backgroundColor}}; }
+      .frame-mark { fill: {{markColor}}; }
+      .frame-border { stroke: {{markColor}}; stroke-width: 2; fill: none; }
+    </style>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect class="frame-bg" x="0" y="0" width="400" height="400" rx="12"/>
+  
+  <!-- Borde decorativo -->
+  <rect class="frame-border" x="20" y="20" width="360" height="360" rx="8"/>
+  
+  <!-- Texto inferior -->
+  <text class="frame-text" x="200" y="375">{{text}}</text>
+  
+  <!-- Espacio para el QR (centro) -->
+  <rect x="50" y="50" width="300" height="300" fill="transparent"/>
+</svg>

@@ -32,6 +32,9 @@ import type { EmailInput } from './content/encoders/email';
 import type { WifiInput } from './content/encoders/wifi';
 import type { WhatsappInput } from './content/encoders/whatsapp';
 import type { VCardInput } from './content/encoders/vcard';
+import type { FrameTemplate } from './content/frames';
+import { CORNER_PATTERNS, DOT_PATTERNS, type CornerPattern, type DotPattern } from './content/patterns';
+
 
 interface FormState {
   url: UrlInput;
@@ -64,6 +67,10 @@ function App() {
   const [templateId, setTemplateId] = useState<string>(CUSTOM_TEMPLATE_ID);
   const [downloadFeedback, setDownloadFeedback] = useState<string | null>(null);
   const [urlPlaceholder, setUrlPlaceholder] = useState('ejemplo.com o https://ejemplo.com');
+  const [selectedFrame, setSelectedFrame] = useState<FrameTemplate | null>(null);
+const [isEditorOpen, setIsEditorOpen] = useState(false);
+const [dotPattern, setDotPattern] = useState<DotPattern>(DOT_PATTERNS[0]);
+const [cornerPattern, setCornerPattern] = useState<CornerPattern>(CORNER_PATTERNS[0]);
 
   // Las páginas guía (/guias/...) enlazan de vuelta con ?tipo=wifi|whatsapp|vcard
   // para dejar preseleccionado el tipo de contenido correcto.
@@ -253,8 +260,65 @@ function App() {
                 <LogoOptions logo={logo} onLogoChange={setLogo} />
               </DesignAccordion>
             </div>
+
+            
           )}
+
+          {isQrReady && (
+  <>
+    {/* Personalización avanzada */}
+    <DesignAccordion title="🖼️ Marcos">
+      <FrameSelector
+        selectedId={selectedFrame?.id || ''}
+        onSelect={setSelectedFrame}
+      />
+      {/* Opciones de personalización del marco */}
+      {selectedFrame?.isCustomizable && (
+        <FrameCustomizer
+          frame={selectedFrame}
+          onUpdate={(updates) => {
+            // Actualizar marco con nuevos colores/texto
+          }}
+        />
+      )}
+    </DesignAccordion>
+
+    <DesignAccordion title="🔲 Patrón de puntos">
+      <PatternSelector
+        selectedId={dotPattern.id}
+        onSelect={setDotPattern}
+      />
+    </DesignAccordion>
+
+    <DesignAccordion title="📍 Esquinas">
+      <CornerSelector
+        selectedId={cornerPattern.id}
+        onSelect={setCornerPattern}
+      />
+    </DesignAccordion>
+
+    <DesignAccordion title="✏️ Editar QR existente">
+      <button
+        className="qr-editor-open-btn"
+        onClick={() => setIsEditorOpen(true)}
+      >
+        📤 Subir y editar QR
+      </button>
+      {isEditorOpen && (
+        <QrEditor
+          onSave={(data) => {
+            // Actualizar el QR con los datos editados
+            setIsEditorOpen(false);
+          }}
+          onCancel={() => setIsEditorOpen(false)}
+        />
+      )}
+    </DesignAccordion>
+  </>
+)}
         </section>
+
+
       </main>
 
       <LandingIntro />
