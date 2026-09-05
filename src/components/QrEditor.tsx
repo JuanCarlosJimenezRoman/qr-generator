@@ -1,6 +1,7 @@
 // src/components/QrEditor.tsx
 import { useState, useRef } from 'react';
-import { QrPreview, type QrPreviewHandle } from './QrPreview';
+import { QrPreview } from './QrPreview';
+import { CUSTOM_TEMPLATE_ID, resolveQrStyle } from '../content/templates';
 
 interface QrEditorProps {
   onSave: (data: string) => void;
@@ -76,7 +77,10 @@ export function QrEditor({ onSave, onCancel }: QrEditorProps) {
                 <>
                   <p>✅ Decodificado: {decodedData}</p>
                   {/* Aquí iría el QR regenerado con nuevas opciones */}
-                  <QrPreview data={decodedData} />
+                  <QrPreview
+                    data={decodedData}
+                    style={resolveQrStyle(CUSTOM_TEMPLATE_ID, { dotColor: '#111111', backgroundColor: '#ffffff' })}
+                  />
                 </>
               ) : (
                 <p>❌ No se pudo decodificar el QR</p>
